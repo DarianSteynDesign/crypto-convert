@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Darian Steyn">
+
+    <title>CryptoConvert</title>
+
+    <script src="/jquery-3.3.1.min.js"></script>
+
+    <style>
+        body {
+            margin: 0 auto;
+            white-space: nowrap;
+            width: 300px;
+            height: 450px;
+            background-color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            position: relative;
+        }
+        
+        #topBg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            z-index: 1;
+            background-image: url(topBg.png);
+            background-repeat: no-repeat;
+            background-size: contain;
+        }
+        
+        #crypConLogo {
+            position: relative;
+            top: 10px;
+            z-index: 2;
+            width: auto;
+            height: 30px;
+            display: block;
+            margin: 0 auto;
+        }
+        
+        .symContainer1,
+        .symContainer2 {
+            position: relative;
+            z-index: 2;
+            -webkit-transition: top 0.4s ease;
+            -moz-transition: top 0.4s ease;
+            -o-transition: top 0.4s ease;
+            transition: top 0.4s ease;
+        }
+        
+        .symContainer1 {
+            top: 10%;
+        }
+        
+        .symContainer1.switch {
+            top: 60%;
+        }
+        
+        .symContainer1.switch #sym1,
+        .symContainer1.switch #priceSym1 {
+            color: #4580ff;
+        }
+        
+        .symContainer2 {
+            top: 43.5%;
+        }
+        
+        .symContainer2.switch {
+            top: -5%;
+        }
+        
+        .symContainer2.switch #sym2,
+        .symContainer2.switch #priceSym2 {
+            color: white;
+        }
+        
+        .symInputs {
+            display: block;
+            font-size: 3.5em;
+            margin: 0 auto;
+            width: 200px;
+            background: none;
+            border: none;
+            text-align: center;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        .symInputs:focus {
+            border: 0;
+            outline: none;
+        }
+        
+        #sym1 {
+            color: white;
+        }
+        
+        #sym2 {
+            color: #4580ff;
+        }
+        
+        .priceSym {
+            display: block;
+            text-align: center;
+            cursor: pointer;
+        }
+        
+        #priceSym1 {
+            font-family: 'Montserrat', sans-serif;
+            color: white;
+            font-size: 1.3em;
+        }
+        
+        #priceSym2 {
+            font-family: 'Montserrat', sans-serif;
+            color: #4580ff;
+            font-size: 1.3em;
+        }
+        
+        #toggleLbl {
+            display: block;
+            position: relative;
+            z-index: 2;
+            margin: 0 auto;
+            font-size: 1.3em;
+            top: 5%;
+            width: 50px;
+            border-radius: 50%;
+            background-color: white;
+            border: 1px solid #37a0ff;
+            cursor: pointer;
+            text-align: center;
+            padding: 15px 0;
+            color: #37a0ff;
+        }
+        
+        #toggleLbl.loading {
+            animation: loading 0.5s ease infinite;
+        }
+        
+        @keyframes loading {
+            0% {
+                transform: rotate(0);
+            }
+            100% {
+                transform: rotate(180deg);
+            }
+        }
+        
+        #coinCont {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 0%;
+            width: 100%;
+            background-color: white;
+            z-index: -1;
+            overflow: scroll;
+            -webkit-transition: height 0.4s ease;
+            -moz-transition: height 0.4s ease;
+            -o-transition: height 0.4s ease;
+            transition: height 0.4s ease;
+        }
+        
+        #coinCont.active {
+            height: 100%;
+            z-index: 3;
+        }
+        
+        #coinCont::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .coinNav {
+            position: fixed;
+            z-index: 4;
+            left: 0;
+            width: 100%;
+            height: 40px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-image: url(navBar.png);
+        }
+        
+        div#changeType {
+            float: left;
+        }
+        
+        div#searchWrap {
+            float: right;
+        }
+        
+        #searchInput {
+            float: left;
+            margin: 10px 10px;
+            height: 20px;
+            width: 130px;
+            border-radius: 20px;
+            border: none;
+            padding-left: 5px;
+        }
+        
+        .nav-btn {
+            height: 20px;
+            width: 20px;
+            display: inline-block;
+            background-repeat: no-repeat;
+            background-size: contain;
+            background-position: center;
+            cursor: pointer;
+        }
+        
+        #closeBtn {
+            margin: 10px 7px;
+            background-image: url(closeIcon.png);
+        }
+        
+        #fiatBtn {
+            margin: 10px 7px;
+            background-image: url(fiatIcon.png);
+        }
+        
+        #cryptoBtn {
+            margin: 10px 0;
+            background-image: url(cryptoIcon.png);
+        }
+        
+        .coinListWrap {
+            position: relative;
+            padding-top: 40px;
+            height: 100%;
+        }
+        
+        .coinList {
+            padding: 0 10px;
+        }
+        
+        .coinList ul {
+            padding: 0;
+        }
+        
+        #fiatList li {
+            position: relative;
+            text-decoration: none;
+            float: left;
+            margin: 10px 20px;
+            width: 50px;
+            height: 20px;
+            list-style-type: none;
+            color: #888888;
+        }
+
+        #fiatList li .fiatText:hover {
+            color: white;
+        }
+
+        #fiatList li:hover::after{
+            width: 82px;
+            height: 35px;
+            opacity: 1;
+        }
+
+        #fiatList li::after{
+            content: '';
+            position: absolute;
+            top: -7px;
+            z-index: -1;
+            left: -4px;
+            width: 45px;
+            height: 45px;
+            opacity: 0;
+            background: #467fff;
+            border-radius: 20px;
+            transition: width 0.4s ease, height 0.4s ease, opacity 0.4s ease;
+        }
+
+        #fiatList li::after{
+            top: -3px;
+            left: -4px;
+        }
+        
+        img.coin-img {
+            width: 85%;
+            display: block;
+            margin: 0 auto;
+            border-radius: 50%;
+        }
+        
+        #cryptoSymbolList.inactive {
+            display: none;
+        }
+        
+        #fiatList {
+            position: absolute;
+            top: 30px;
+            left: 0;
+            padding: 0;
+            height: 0%;
+            width: 100%;
+            background-color: #fff;
+            z-index: -1;
+            opacity: 0;
+            -webkit-transition: height 0.4s ease;
+            -moz-transition: height 0.4s ease;
+            -o-transition: height 0.4s ease;
+            transition: height 0.4s ease;
+        }
+        
+        #fiatList.active {
+            height: auto;
+            z-index: 2;
+            opacity: 1;
+        }
+        /* #fiatList li{
+
+            } */
+        
+        .fiatText {
+            text-align: center;
+            display: block;
+            /* background-color: #467fff; */
+            width: 60px;
+            border: 1px solid #467fff;
+            border-radius: 20px;
+            color: #467fff;
+            padding: 7px 7px;
+            cursor: pointer;
+        }
+
+        #cryptoSymbolList li {
+            position: relative;
+            text-decoration: none;
+            float: left;
+            margin: 10px 20px;
+            width: 50px;
+            height: 60px;
+            list-style-type: none;
+            color: #888888;
+        }
+        
+        .symText {
+            position: relative;
+            font-size: 0.85em;
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        #cryptoSymbolList li:hover .symText::after {
+            opacity: 1;
+        }
+
+        .symText::after {
+            opacity: 0;
+            content: ' ';
+            position: absolute;
+            right: 0px;
+            background: #467fff;
+            top: 4px;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            -webkit-transition: opacity 0.4s ease;
+            -moz-transition: opacity 0.4s ease;
+            -o-transition: opacity 0.4s ease;
+            transition: opacity 0.4s ease;
+        }
+        
+        .symLink {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 70px;
+            width: 100%;
+            cursor: pointer;
+        }
+        
+        #donateContainer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            -webkit-transition: opacity 0.4s ease;
+            -moz-transition: opacity 0.4s ease;
+            -o-transition: opacity 0.4s ease;
+            transition: opacity 0.4s ease;
+        }
+        
+        #donateContainer.active {
+            background-color: #fff;
+            z-index: 5;
+            opacity: 1;
+        }
+        
+        #donateBtn {
+            height: 30px;
+            width: 30px;
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background-size: contain;
+            background-image: url(donateBtn.png);
+            background-repeat: no-repeat;
+            cursor: pointer;
+            z-index: 6;
+            -webkit-transition: background-image 0.4s ease;
+            -moz-transition: background-image 0.4s ease;
+            -o-transition: background-image 0.4s ease;
+            transition: background-image 0.4s ease;
+        }
+        
+        #donateBtn.active {
+            background-image: url(donateBtnClose.png);
+        }
+        
+        #bugBtn {
+            height: 30px;
+            width: 30px;
+            position: absolute;
+            bottom: 10px;
+            right: 45px;
+            background-size: contain;
+            background-image: url(bugIcon.png);
+            background-repeat: no-repeat;
+            cursor: pointer;
+        }
+        
+        p#donateText1 {
+            margin: 0;
+            font-size: 1.3em;
+            padding: 20px 10px 10px 10px;
+            white-space: initial;
+        }
+        
+        p#donateText2 {
+            margin: 0;
+            padding: 5px 10px;
+            color: #696969;
+            font-size: 1.1em;
+        }
+        
+        .coinWrap {
+            padding: 20px 10px;
+            margin: 15px 0;
+        }
+        
+        .donateCoin {
+            width: 30px;
+            float: left;
+        }
+        
+        .walletCont {
+            width: 85%;
+            float: right;
+            border-radius: 20px;
+            border: 1px solid #dedede;
+        }
+        
+        .walletText {
+            font-size: 0.8em;
+            text-align: center;
+        }
+        
+        #symLoading.active{
+            position: absolute;
+            z-index: 111;
+            opacity: 1;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url(topBg.png);
+            background-size: cover;
+        }
+
+        #symLoading{
+            opacity: 0;
+            z-index: -1;
+        }
+
+        #loadingText{
+            width: 105px;
+            position: absolute;
+            top: 45%;
+            left: 0;
+            right: 0;
+            margin: auto;
+            color: white;
+            font-size: 1.6em;
+        }
+
+        #symLoading.active #loadingText::after{
+            content: '.';
+            animation: loadDots 1s ease-in-out infinite forwards;
+        }
+
+        @keyframes loadDots{
+            0%{
+                content: '.';
+            }
+
+            50%{
+                content: '..'
+            }
+
+            100%{
+                content: '...'
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+    <div id="topBg"></div>
+    <img id="crypConLogo" src="crypConlogo.png">
+
+    <div class="symContainer1 symCont">
+        <input type="text" id="sym1" class="symInputs">
+        <span id="priceSym1" class="priceSym">BTC</span>
+    </div>
+
+    <div class="symContainer2 symCont">
+        <input type="text" id="sym2" class="symInputs">
+        <span id="priceSym2" class="priceSym">USD</span>
+    </div>
+
+    <span id="toggleLbl" class="loading">GO</span>
+
+    <div class="coinCont" id="coinCont">
+        <div class="coinNav">
+            <div id="changeType">
+                <a id="closeBtn" class="nav-btn"></a>
+
+                <a id="cryptoBtn" class="nav-btn"></a>
+
+                <a id="fiatBtn" class="nav-btn"></a>
+            </div>
+
+            <div id="searchWrap">
+                <input type="text" id="searchInput" placeholder="Search">
+            </div>
+        </div>
+
+        <div class="coinListWrap" id="coinWrap1">
+            <ul id="cryptoSymbolList" class="coinList">
+
+            </ul>
+
+            <ul id="fiatList" class="coinList">
+
+            </ul>
+
+        </div>
+    </div>
+
+    <span id="donateBtn"></span>
+
+    <div id="donateContainer">
+
+        <p id="donateText1">Did this extension help you in any way?</p>
+        <p id="donateText2">Feel free to donate some coins if it did.</p>
+
+        <div class="coinWrap">
+            <img class="donateCoin" id="btcImg" src="btc.png">
+            <div class="walletCont">
+                <p class="walletText">1E27ocz9mcm9mnytzMCbT1yHSdkK2Nnw84</p>
+            </div>
+        </div>
+
+        <div class="coinWrap">
+            <img class="donateCoin" id="ethImg" src="eth.jpg">
+            <div class="walletCont">
+                <p class="walletText">0x9a032985b39589bf1e999047acea705c92af4929</p>
+            </div>
+        </div>
+
+        <div class="coinWrap">
+            <img class="donateCoin" id="liteImg" src="litecoin.png">
+            <div class="walletCont">
+                <p class="walletText">LhXpy8F3rP1tA7V85rAbAKadbuAFZUfVC8</p>
+            </div>
+        </div>
+
+        <div class="coinWrap">
+            <img class="donateCoin" id="neoImg" src="neo.jpg">
+            <div class="walletCont">
+                <p class="walletText">AX2Mys9Yi7YGatgYHGLtCuaWgvLG7w3pkY</p>
+            </div>
+        </div>
+
+        <div class="coinWrap">
+            <img class="donateCoin" id="dashImg" src="dash.png">
+            <div class="walletCont">
+                <p class="walletText">Xj4tCk71P4UduLwdTphrZFBqEdRud4ue6V</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="bugContainer">
+        <a id="bugBtn" href="mailto:dariansteyn.design@gmail.com" title="Report a bug"></a>
+    </div>
+
+    <div id="symLoading" class="active">
+        <p id="loadingText">LOADING</p>
+    </div>
+
+    <!--
+        <div class="coinCont1">
+            <ul>
+                <li>
+                    <img class="coin-img" src="">
+                    <a class="symText">Bitcoin</a>
+                </li>
+            </ul>
+        </div>
+-->
+
+    <script src="popup.js"></script>
+</body>
+
+</html>
