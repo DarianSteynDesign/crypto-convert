@@ -4,6 +4,7 @@ var successMethods = (function(){
     var getTop100ListSuccess = function(data) {
         let top100List = data;
         console.log(top100List);
+        console.log("Test change");
     }
 
     return {
