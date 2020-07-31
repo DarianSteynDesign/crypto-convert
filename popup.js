@@ -1,32 +1,21 @@
 //SUCCESS METHODS
 
 var successMethods = (function(){
-
-    function getCryptosSuccess(data){
-        var coinList = data.Data;
-        coinList = $.map( coinList, function( value, index ) {
-          return value;
-        });
-        console.log(coinList);
-    };
-
-    var getPriceSuccess = function(data){
-        var price = data;
-        console.log(price);
-    };
+    var getTop100ListSuccess = function(data) {
+        let top100List = data;
+        console.log(top100List);
+    }
 
     return {
-        getCryptosSuccess,
-        getPriceSuccess
+        getTop100ListSuccess
     }
 })(successMethods);
 
 //SERVICES
 
 var services = (function() {
-    var endpoint = 'https://min-api.cryptocompare.com/data/',
-        coinListEnd = 'all/coinlist',
-        priceEnd = "price?fsym=";
+
+    //API Call main method
 
     var apiCall = function(type, url, dataType, successFunc){
         $.ajax({
@@ -40,19 +29,16 @@ var services = (function() {
         });
     }
 
-    var getCryptos = function(){
-        var url = endpoint + coinListEnd;
-        apiCall("GET", url, "json", successMethods.getCryptosSuccess);
-    };
+    //Get top 100 coins
 
-    var getPrice = function(sym1, sym2){
-        var priceEndpoint = endpoint + priceEnd + sym1 + "&tsyms=" + sym2;
-        apiCall("GET", priceEndpoint, "json", successMethods.getPriceSuccess);
+    var top100Endpoint = "https://min-api.cryptocompare.com/data/top/totaltoptiervolfull?limit=100&tsym=USD";
+
+    var getTop100List = function(){
+        apiCall("Get", top100Endpoint, "json", successMethods.getTop100ListSuccess);
     }
 
     return {
-        getCryptos,
-        getPrice
+        getTop100List
     }
 })(services);
 
@@ -60,12 +46,8 @@ var services = (function() {
 
 var mainMethods = (function(){
 
-    var getCryptoList = function (){
-        services.getCryptos();
-    }();
-
-    var priceComparison = function(){
-        services.getPrice("BTC", "USD");
+    var getTop100List = function(){
+        services.getTop100List();
     }();
 
     return {
