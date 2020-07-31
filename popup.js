@@ -3,8 +3,8 @@
 var successMethods = (function(){
     var getTop100ListSuccess = function(data) {
         let top100List = data;
-        console.log(top100List);
 
+        uiActions.loadCurrencyList($("#cryptoSymbolList"), data);
         uiActions.toggleElementState($("#toggleLbl"));
     }
 
@@ -18,7 +18,6 @@ var successMethods = (function(){
 var services = (function() {
 
     //API Call main method
-
     var apiCall = function(type, url, dataType, successFunc, errorFunc){
         $.ajax({
             type: type,
@@ -34,15 +33,13 @@ var services = (function() {
     }
 
     //Get top 100 coins
-
-    var top100Endpoint = "https://min-api.cryptocompare.com/data/top/totaltoptiervolfull?limit=100&tsym=";
-
     var getTop100List = function(currency){
+        let top100Endpoint = "https://min-api.cryptocompare.com/data/top/totaltoptiervolfull?limit=100&tsym=";
+
         apiCall("Get", top100Endpoint + currency, "json", successMethods.getTop100ListSuccess, requestError);
     }
 
     //Error func
-
     var requestError = function(response){
         console.log(response);
     }
@@ -100,8 +97,16 @@ var uiActions = (function(){
         loadingLbl.toggleClass('active');
     }
 
-    var loadCurrencyList = function(listElement, data) {
-        console.log(listElement, data);
+    //Populate currencyList
+    var loadCurrencyList = function(listElement, response) {
+        let coinList = "";
+        console.log(listElement, response);
+        
+        response.Data.forEach(function(item){
+            coinList += "<li class='cyrpto-list-item'>" + item.CoinInfo.Name + "</li>";
+        });
+        
+        listElement.html(coinList);
     }
 
     return {
