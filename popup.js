@@ -1,10 +1,11 @@
 //SUCCESS METHODS
 
 var successMethods = (function(){
-    var getTop100ListSuccess = function(data) {
-        let top100List = data;
 
-        uiActions.loadCurrencyList($("#cryptoSymbolList"), data);
+    var getTop100ListSuccess = function(data) {
+        uiActions.getTop100Data(data);
+
+        uiActions.loadCurrencyList($("#cryptoSymbolList"));
         uiActions.toggleElementState($("#toggleLbl"));
     }
 
@@ -57,6 +58,15 @@ var mainMethods = (function(){
         services.getTop100List("ZAR");
     }();
 
+    var loadFiatList = function(){
+        var fiatList = JSON.parse(jsonFiatList);
+        uiActions.loadFiatList(fiatList);
+    };
+
+    $(window).on('load', function() {
+        loadFiatList();
+    });
+
     return {
         
     }
@@ -75,10 +85,21 @@ var eventListeners = (function(){
 
     //Top currency button event
     $("#priceSym1").click(function(){
-        uiActions.toggleElementState($("#coinCont"));
+        uiActions.toggleElementState($("#cryptoSymbolList"));
+    });
+    $("#fiatBtn").click(function(){
+        uiActions.toggleElementState($("#fiatList"));
     });
 
     $("#closeBtn").click(function(){
+        uiActions.toggleElementState($("#coinCont"));
+    });
+
+    $("body").on("click", ".crypto-list-item", function(event){
+        let selectedId = $(this).data('id');
+        let name = $(this).data('name');
+        let fullname = $(this).data('fullname');
+        uiActions.getSelectedCryptoData(selectedId);
         uiActions.toggleElementState($("#coinCont"));
     });
 
@@ -90,27 +111,72 @@ var eventListeners = (function(){
 //UI ACTIONS
 
 var uiActions = (function(){
+    var top100 = [];
 
-    //Toggle Loading
-    var toggleElementState = function(elementToggle) {
-        let loadingLbl = elementToggle;
-        loadingLbl.toggleClass('active');
+    //Get Top 100 List
+    var getTop100Data = function(response){
+        top100 = response.Data;
     }
 
-    //Populate currencyList
-    var loadCurrencyList = function(listElement, response) {
+    //Populate cryptoList
+    var loadCurrencyList = function(listElement) {
         let coinList = "";
-        console.log(listElement, response);
         
-        response.Data.forEach(function(item){
-            coinList += "<li class='cyrpto-list-item'>" + item.CoinInfo.Name + "</li>";
+        top100.forEach(function(item){
+            coinList += "<li class='crypto-list-item' data-id='" + item.CoinInfo.Id + 
+                        "' data-name='" + item.CoinInfo.Name + 
+                        "' data-fullname='" + item.CoinInfo.FullName + 
+                        "' > <img class='crypto-item-img' src='https://www.cryptocompare.com/" + item.CoinInfo.ImageUrl + 
+                        " ' /> <p class='crypto-item-text'>" + item.CoinInfo.Name + "</p></li>";
         });
+        getSelectedCryptoData(1182);
         
         listElement.html(coinList);
     }
 
+    //Populate fiatList
+    var loadFiatList = function(list) {
+        let fiatList = "";
+
+        list.forEach((listItem) => {
+            fiatList += "<li class='crypto-list-item' data-id='" + Object.keys(listItem)[0] + "'>" + Object.keys(listItem)[0] + "</li>";
+        });
+
+        $("#fiatList").html(fiatList);
+    }
+
+    //Toggle Loading
+    var toggleElementState = function(elementToToggle) {
+        if(elementToToggle[0].classList.contains('coinList')) {
+            $("#coinCont").toggleClass('active')
+        }
+
+        elementToToggle.toggleClass('active');
+    }
+
+    //Get selected data
+    var getSelectedCryptoData = function(selectedId) {
+        selectedId = JSON.stringify(selectedId);
+        top100.forEach(function(item){
+            let price1 = Object.values(item.RAW)[0].PRICE;
+            let coinName1 = item.CoinInfo.Name;
+
+            (item.CoinInfo["Id"] == selectedId) ? updateUiWithSelected(price1, coinName1, $("#sym1")) : '' ;
+        });
+    }
+
+    //Update ui with selected value
+    var updateUiWithSelected = function(selectedPrice, selectedName, elementToUpdate){
+        elementToUpdate.val(selectedPrice);
+        $("#priceSym1").text(selectedName);
+    }
+
     return {
+        getTop100Data,
         toggleElementState,
-        loadCurrencyList
+        loadCurrencyList,
+        getSelectedCryptoData,
+        updateUiWithSelected,
+        loadFiatList
     }
 })(uiActions);
