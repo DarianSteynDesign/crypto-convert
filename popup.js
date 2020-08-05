@@ -58,6 +58,15 @@ var mainMethods = (function(){
         services.getTop100List("ZAR");
     }();
 
+    var loadFiatList = function(){
+        var fiatList = JSON.parse(jsonFiatList);
+        uiActions.loadFiatList(fiatList);
+    };
+
+    $(window).on('load', function() {
+        loadFiatList();
+    });
+
     return {
         
     }
@@ -76,7 +85,10 @@ var eventListeners = (function(){
 
     //Top currency button event
     $("#priceSym1").click(function(){
-        uiActions.toggleElementState($("#coinCont"));
+        uiActions.toggleElementState($("#cryptoSymbolList"));
+    });
+    $("#fiatBtn").click(function(){
+        uiActions.toggleElementState($("#fiatList"));
     });
 
     $("#closeBtn").click(function(){
@@ -87,7 +99,8 @@ var eventListeners = (function(){
         let selectedId = $(this).data('id');
         let name = $(this).data('name');
         let fullname = $(this).data('fullname');
-        uiActions.loadSelectedItem(selectedId);
+        uiActions.getSelectedCryptoData(selectedId);
+        uiActions.toggleElementState($("#coinCont"));
     });
 
     return {
@@ -105,16 +118,9 @@ var uiActions = (function(){
         top100 = response.Data;
     }
 
-    //Toggle Loading
-    var toggleElementState = function(elementToggle) {
-        let loadingLbl = elementToggle;
-        loadingLbl.toggleClass('active');
-    }
-
-    //Populate currencyList
+    //Populate cryptoList
     var loadCurrencyList = function(listElement) {
         let coinList = "";
-        console.log(listElement, top100);
         
         top100.forEach(function(item){
             coinList += "<li class='crypto-list-item' data-id='" + item.CoinInfo.Id + 
@@ -123,30 +129,54 @@ var uiActions = (function(){
                         "' > <img class='crypto-item-img' src='https://www.cryptocompare.com/" + item.CoinInfo.ImageUrl + 
                         " ' /> <p class='crypto-item-text'>" + item.CoinInfo.Name + "</p></li>";
         });
+        getSelectedCryptoData(1182);
         
         listElement.html(coinList);
     }
 
-    var loadSelectedItem = function(selectedId) {
-        selectedId = JSON.stringify(selectedId);
-        top100.forEach(function(item){
-            let topPrice = Object.values(item.RAW)[0].PRICE;
-            let coinName = item.CoinInfo.Name;
+    //Populate fiatList
+    var loadFiatList = function(list) {
+        let fiatList = "";
 
-            (item.CoinInfo["Id"] == selectedId) ? updateUiWithSelected(topPrice, coinName) : '' ;
+        list.forEach((listItem) => {
+            fiatList += "<li class='crypto-list-item' data-id='" + Object.keys(listItem)[0] + "'>" + Object.keys(listItem)[0] + "</li>";
         });
 
-        function updateUiWithSelected(selectedPrice, selectedName){
-            $("#sym1").val(selectedPrice);
-            $("#priceSym1").text(selectedName);
-            toggleElementState($("#coinCont"));
+        $("#fiatList").html(fiatList);
+    }
+
+    //Toggle Loading
+    var toggleElementState = function(elementToToggle) {
+        if(elementToToggle[0].classList.contains('coinList')) {
+            $("#coinCont").toggleClass('active')
         }
+
+        elementToToggle.toggleClass('active');
+    }
+
+    //Get selected data
+    var getSelectedCryptoData = function(selectedId) {
+        selectedId = JSON.stringify(selectedId);
+        top100.forEach(function(item){
+            let price1 = Object.values(item.RAW)[0].PRICE;
+            let coinName1 = item.CoinInfo.Name;
+
+            (item.CoinInfo["Id"] == selectedId) ? updateUiWithSelected(price1, coinName1, $("#sym1")) : '' ;
+        });
+    }
+
+    //Update ui with selected value
+    var updateUiWithSelected = function(selectedPrice, selectedName, elementToUpdate){
+        elementToUpdate.val(selectedPrice);
+        $("#priceSym1").text(selectedName);
     }
 
     return {
         getTop100Data,
         toggleElementState,
         loadCurrencyList,
-        loadSelectedItem
+        getSelectedCryptoData,
+        updateUiWithSelected,
+        loadFiatList
     }
 })(uiActions);

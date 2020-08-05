@@ -9,6 +9,7 @@
     <title>CryptoConvert</title>
 
     <script src="/jquery-3.3.1.min.js"></script>
+    <script src="/currencyList.json"></script>
 
     <style>
         body {
@@ -81,7 +82,7 @@
         
         .symInputs {
             display: block;
-            font-size: 3.5em;
+            font-size: 2.5em;
             margin: 0 auto;
             width: 200px;
             background: none;
@@ -237,6 +238,25 @@
         
         .coinList {
             padding: 0 10px;
+            position: absolute;
+            top: 30px;
+            left: 0;
+            padding: 0;
+            height: 0%;
+            width: 100%;
+            background-color: #fff;
+            z-index: -1;
+            opacity: 0;
+            -webkit-transition: height 0.4s ease;
+            -moz-transition: height 0.4s ease;
+            -o-transition: height 0.4s ease;
+            transition: height 0.4s ease;
+        }
+
+        .coinList.active {
+            height: auto;
+            z-index: 2;
+            opacity: 1;
         }
         
         .coinList ul {
@@ -302,35 +322,6 @@
             margin: 0 auto;
             border-radius: 50%;
         }
-        
-        #cryptoSymbolList.inactive {
-            display: none;
-        }
-        
-        #fiatList {
-            position: absolute;
-            top: 30px;
-            left: 0;
-            padding: 0;
-            height: 0%;
-            width: 100%;
-            background-color: #fff;
-            z-index: -1;
-            opacity: 0;
-            -webkit-transition: height 0.4s ease;
-            -moz-transition: height 0.4s ease;
-            -o-transition: height 0.4s ease;
-            transition: height 0.4s ease;
-        }
-        
-        #fiatList.active {
-            height: auto;
-            z-index: 2;
-            opacity: 1;
-        }
-        /* #fiatList li{
-
-            } */
         
         .fiatText {
             text-align: center;
