@@ -88,28 +88,30 @@ var eventListeners = (function(){
         let currType = event.target.dataset.currtype;
 
         uiActions.toggleElementState($('#coinCont'), currType);
-        uiActions.toggleElementState($('#cryptoList'), currType);
     });
 
     $("#priceSym2").click(function(event) {
         let currType = event.target.dataset.currtype;
 
         uiActions.toggleElementState($('#coinCont'), currType);
-        uiActions.toggleElementState($('#cryptoList'), currType);
     });
 
-    $("#cryptoBtn").click(function() {
-        uiActions.toggleElementState($('#fiatList'));
+    $("#cryptoBtn").click(function(event) {
+        let currType = event.target.dataset.currtype;
+
+        uiActions.toggleElementState(null, currType);
     });
     
-    $("#fiatBtn").click(function() {
-        uiActions.toggleElementState($('#fiatList'));
+    $("#fiatBtn").click(function(event) {
+        let currType = event.target.dataset.currtype;
+
+        uiActions.toggleElementState($('#cryptoList'), currType);
     });
 
     $("#closeBtn").click(function() {
         uiActions.toggleElementState($('#coinCont'));
         uiActions.toggleElementState($('#cryptoList'));
-    });
+    }); 
 
     $("body").on("click", ".crypto-list-item", function(event) {
         let selectedId = $(this).data('id');
