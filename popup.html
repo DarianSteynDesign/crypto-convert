@@ -128,27 +128,55 @@
             z-index: 2;
             margin: 0 auto;
             font-size: 1.3em;
-            top: 5%;
-            width: 50px;
-            border-radius: 50%;
+            top: 14%;
+            width: 80px;
+            height: 20px;
+            border-radius: 15px;
             background-color: white;
             border: 1px solid #37a0ff;
             cursor: pointer;
             text-align: center;
-            padding: 15px 0;
+            padding: 5px 10px;
             color: #37a0ff;
+            -webkit-transition: width 0.4s ease, height 0.4s ease, top 0.4s ease;
+            -moz-transition: width 0.4s ease, height 0.4s ease, top 0.4s ease;
+            -o-transition: width 0.4s ease, height 0.4s ease, top 0.4s ease;
+            transition: width 0.4s ease, height 0.4s ease, top 0.4s ease;
+        }
+
+        #toggleLbl::after{
+            content: 'Convert';
         }
         
         #toggleLbl.active {
-            animation: loading 0.5s ease infinite;
+            animation: loading 0.5s ease-in-out infinite;
+            width: 10px;
+            height: 10px;
+            top: 15%;
+        }
+
+        #toggleLbl.active::after{
+            content: '...';
+            font-weight: 600;
+            display: block;
+            position: absolute;
+            height: 30px;
+            width: auto;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: auto;
         }
         
         @keyframes loading {
-            0% {
-                transform: rotate(0);
+            from {
+				-webkit-transform: rotate(0deg);
+                transform: rotate(0deg);
             }
-            100% {
-                transform: rotate(180deg);
+            to {
+                -webkit-transform: rotate(359deg);
+                transform: rotate(359deg);
             }
         }
         
@@ -166,14 +194,58 @@
             -o-transition: height 0.4s ease;
             transition: height 0.4s ease;
         }
-        
+
         #coinCont.active {
             height: 100%;
+            opacity: 1;
+            z-index: 2;
+        }
+
+        #coinCont::-webkit-scrollbar {
+            display: none;
+        }
+
+        #cryptoList {
+            opacity: 1;
+            z-index: 2;
+        }
+
+        #cryptoList li {
+            position: relative;
+            text-decoration: none;
+            float: left;
+            margin: 20px 10px;
+            width: 26.33%;
+            height: 60px;
+            list-style-type: none;
+            color: #888888;
+        }
+
+        #fiatList {
+            opacity: 0;
+            z-index: -1;
+        }
+
+        #fiatList.active {
+            opacity: 1;
             z-index: 3;
         }
         
-        #coinCont::-webkit-scrollbar {
-            display: none;
+        #fiatList li {
+            position: relative;
+            text-decoration: none;
+            float: left;
+            margin: 10px 20px;
+            padding: 15px 12px;
+            text-align: center;
+            border-radius: 50%;
+            list-style-type: none;
+            background: #3e81f3;
+            color: white;
+        }
+
+        #fiatList li:hover {
+            font-weight: 600;
         }
         
         .coinNav {
@@ -267,53 +339,27 @@
             cursor: pointer;
         }
 
+        .crypto-list-item:hover .crypto-item-img {
+            bottom: 5px;
+        }
+
         .crypto-item-img {
+            position: relative;
+            bottom: 0;
             width: 45px;
             border-radius: 50%;
+            margin: 0 auto;
+            display: block;
+            -webkit-transition: bottom 0.4s ease;
+            -moz-transition: bottom 0.4s ease;
+            -o-transition: bottom 0.4s ease;
+            transition: bottom 0.4s ease;
         }
 
         .crypto-item-text {
             text-align: center;
-        }
-        
-        #fiatList li {
-            position: relative;
-            text-decoration: none;
-            float: left;
-            margin: 10px 20px;
-            width: 50px;
-            height: 20px;
-            list-style-type: none;
-            color: #888888;
-        }
-
-        #fiatList li .fiatText:hover {
-            color: white;
-        }
-
-        #fiatList li:hover::after{
-            width: 82px;
-            height: 35px;
-            opacity: 1;
-        }
-
-        #fiatList li::after{
-            content: '';
-            position: absolute;
-            top: -7px;
-            z-index: -1;
-            left: -4px;
-            width: 45px;
-            height: 45px;
-            opacity: 0;
-            background: #467fff;
-            border-radius: 20px;
-            transition: width 0.4s ease, height 0.4s ease, opacity 0.4s ease;
-        }
-
-        #fiatList li::after{
-            top: -3px;
-            left: -4px;
+            margin: 5px 0;
+            font-weight: 500;
         }
         
         img.coin-img {
@@ -334,17 +380,6 @@
             padding: 7px 7px;
             cursor: pointer;
         }
-
-        #cryptoSymbolList li {
-            position: relative;
-            text-decoration: none;
-            float: left;
-            margin: 20px;
-            width: 50px;
-            height: 60px;
-            list-style-type: none;
-            color: #888888;
-        }
         
         .symText {
             position: relative;
@@ -354,10 +389,6 @@
             text-overflow: ellipsis;
             text-align: center;
             margin: 10px 0;
-        }
-
-        #cryptoSymbolList li:hover .symText::after {
-            opacity: 1;
         }
 
         .symText::after {
@@ -493,24 +524,24 @@
 
     <div class="symContainer1 symCont">
         <input type="text" id="sym1" class="symInputs">
-        <span id="priceSym1" class="priceSym">BTC</span>
+        <span id="priceSym1" class="priceSym" data-currType="crypto">BTC</span>
     </div>
 
     <div class="symContainer2 symCont">
         <input type="text" id="sym2" class="symInputs">
-        <span id="priceSym2" class="priceSym">USD</span>
+        <span id="priceSym2" class="priceSym" data-currType="fiat">USD</span>
     </div>
 
-    <span id="toggleLbl" class="active">GO</span>
+    <span id="toggleLbl" class="active"></span>
 
     <div class="coinCont" id="coinCont">
         <div class="coinNav">
             <div id="changeType">
                 <a id="closeBtn" class="nav-btn"></a>
 
-                <a id="cryptoBtn" class="nav-btn"></a>
+                <a id="cryptoBtn" class="nav-btn" data-currType="crypto"></a>
 
-                <a id="fiatBtn" class="nav-btn"></a>
+                <a id="fiatBtn" class="nav-btn" data-currType="fiat"></a>
             </div>
 
             <div id="searchWrap">
@@ -519,7 +550,7 @@
         </div>
 
         <div class="coinListWrap" id="coinWrap1">
-            <ul id="cryptoSymbolList" class="coinList">
+            <ul id="cryptoList" class="coinList">
 
             </ul>
 
