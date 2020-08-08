@@ -67,8 +67,14 @@ var mainMethods = (function(){
         loadFiatList();
     });
 
+    var convertValues = function(val1, val2){
+        let total = 0;
+        total += val1 * val2;
+        return total.toFixed(2);
+    }
+
     return {
-        
+        convertValues
     }
 })(mainMethods);
 
@@ -119,6 +125,11 @@ var eventListeners = (function(){
         let fullname = $(this).data('fullname');
         uiActions.getSelectedCryptoData(selectedId);
         uiActions.toggleElementState($("#coinCont"));
+    });
+
+    $("#toggleLbl").click(function(){
+        console.log($("#sym1")[0].dataset.price);
+        uiActions.getInputValues($("#sym1")[0].dataset.price, $("#sym2"));
     });
 
     return {
@@ -187,7 +198,11 @@ var uiActions = (function(){
             let price1 = Object.values(item.RAW)[0].PRICE;
             let coinName1 = item.CoinInfo.Name;
 
-            (item.CoinInfo["Id"] == selectedId) ? updateUiWithSelected(price1, coinName1, $("#sym1")) : '' ;
+            if(item.CoinInfo["Id"] == selectedId){
+                $("#sym1").attr("data-price", price1);
+                updateUiWithSelected(price1, coinName1, $("#sym1"))
+            }
+
         });
     }
 
@@ -197,12 +212,20 @@ var uiActions = (function(){
         $("#priceSym1").text(selectedName);
     }
 
+    var getInputValues = function(inputVal1, inputVal2){
+        inputVal1 = parseFloat(inputVal1).toFixed(2);
+        inputVal2 = parseFloat(inputVal2[0].value).toFixed(2);
+
+        updateUiWithSelected(mainMethods.convertValues(inputVal1, inputVal2), $("#priceSym1")[0].innerText, $("#sym1"));
+    }
+
     return {
         getTop100Data,
         toggleElementState,
         loadCurrencyList,
         getSelectedCryptoData,
         updateUiWithSelected,
-        loadFiatList
+        loadFiatList,
+        getInputValues
     }
 })(uiActions);
