@@ -166,14 +166,62 @@
             -o-transition: height 0.4s ease;
             transition: height 0.4s ease;
         }
-        
+
         #coinCont.active {
             height: 100%;
+            opacity: 1;
+            z-index: 2;
+        }
+
+        #coinCont::-webkit-scrollbar {
+            display: none;
+        }
+
+        #cryptoList {
+            opacity: 1;
+            z-index: 2;
+        }
+
+        #cryptoList li {
+            position: relative;
+            text-decoration: none;
+            float: left;
+            margin: 20px;
+            width: 50px;
+            height: 60px;
+            list-style-type: none;
+            color: #888888;
+        }
+
+        #cryptoList li:hover .symText::after {
+            opacity: 1;
+        }
+
+        #fiatList {
+            opacity: 0;
+            z-index: -1;
+        }
+
+        #fiatList.active {
+            opacity: 1;
             z-index: 3;
         }
         
-        #coinCont::-webkit-scrollbar {
-            display: none;
+        #fiatList li {
+            position: relative;
+            text-decoration: none;
+            float: left;
+            margin: 10px 20px;
+            padding: 15px 12px;
+            text-align: center;
+            border-radius: 50%;
+            list-style-type: none;
+            background: #3e81f3;
+            color: white;
+        }
+
+        #fiatList li:hover {
+            font-weight: 600;
         }
         
         .coinNav {
@@ -276,46 +324,6 @@
             text-align: center;
         }
         
-        #fiatList li {
-            position: relative;
-            text-decoration: none;
-            float: left;
-            margin: 10px 20px;
-            width: 50px;
-            height: 20px;
-            list-style-type: none;
-            color: #888888;
-        }
-
-        #fiatList li .fiatText:hover {
-            color: white;
-        }
-
-        #fiatList li:hover::after{
-            width: 82px;
-            height: 35px;
-            opacity: 1;
-        }
-
-        #fiatList li::after{
-            content: '';
-            position: absolute;
-            top: -7px;
-            z-index: -1;
-            left: -4px;
-            width: 45px;
-            height: 45px;
-            opacity: 0;
-            background: #467fff;
-            border-radius: 20px;
-            transition: width 0.4s ease, height 0.4s ease, opacity 0.4s ease;
-        }
-
-        #fiatList li::after{
-            top: -3px;
-            left: -4px;
-        }
-        
         img.coin-img {
             width: 85%;
             display: block;
@@ -334,17 +342,6 @@
             padding: 7px 7px;
             cursor: pointer;
         }
-
-        #cryptoSymbolList li {
-            position: relative;
-            text-decoration: none;
-            float: left;
-            margin: 20px;
-            width: 50px;
-            height: 60px;
-            list-style-type: none;
-            color: #888888;
-        }
         
         .symText {
             position: relative;
@@ -354,10 +351,6 @@
             text-overflow: ellipsis;
             text-align: center;
             margin: 10px 0;
-        }
-
-        #cryptoSymbolList li:hover .symText::after {
-            opacity: 1;
         }
 
         .symText::after {
@@ -493,12 +486,12 @@
 
     <div class="symContainer1 symCont">
         <input type="text" id="sym1" class="symInputs">
-        <span id="priceSym1" class="priceSym">BTC</span>
+        <span id="priceSym1" class="priceSym" data-currType="crypto">BTC</span>
     </div>
 
     <div class="symContainer2 symCont">
         <input type="text" id="sym2" class="symInputs">
-        <span id="priceSym2" class="priceSym">USD</span>
+        <span id="priceSym2" class="priceSym" data-currType="fiat">USD</span>
     </div>
 
     <span id="toggleLbl" class="active">GO</span>
@@ -519,7 +512,7 @@
         </div>
 
         <div class="coinListWrap" id="coinWrap1">
-            <ul id="cryptoSymbolList" class="coinList">
+            <ul id="cryptoList" class="coinList">
 
             </ul>
 

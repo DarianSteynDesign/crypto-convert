@@ -5,7 +5,7 @@ var successMethods = (function(){
     var getTop100ListSuccess = function(data) {
         uiActions.getTop100Data(data);
 
-        uiActions.loadCurrencyList($("#cryptoSymbolList"));
+        uiActions.loadCurrencyList($("#cryptoList"));
         uiActions.toggleElementState($("#toggleLbl"));
     }
 
@@ -84,18 +84,34 @@ var eventListeners = (function(){
     //clickEvent($("#priceSym1"), uiActions.toggleElementState($("#coinCont")));
 
     //Top currency button event
-    $("#priceSym1").click(function(){
-        uiActions.toggleElementState($("#cryptoSymbolList"));
-    });
-    $("#fiatBtn").click(function(){
-        uiActions.toggleElementState($("#fiatList"));
+    $("#priceSym1").click(function(event) {
+        let currType = event.target.dataset.currtype;
+
+        uiActions.toggleElementState($('#coinCont'), currType);
+        uiActions.toggleElementState($('#cryptoList'), currType);
     });
 
-    $("#closeBtn").click(function(){
-        uiActions.toggleElementState($("#coinCont"));
+    $("#priceSym2").click(function(event) {
+        let currType = event.target.dataset.currtype;
+
+        uiActions.toggleElementState($('#coinCont'), currType);
+        uiActions.toggleElementState($('#cryptoList'), currType);
     });
 
-    $("body").on("click", ".crypto-list-item", function(event){
+    $("#cryptoBtn").click(function() {
+        uiActions.toggleElementState($('#fiatList'));
+    });
+    
+    $("#fiatBtn").click(function() {
+        uiActions.toggleElementState($('#fiatList'));
+    });
+
+    $("#closeBtn").click(function() {
+        uiActions.toggleElementState($('#coinCont'));
+        uiActions.toggleElementState($('#cryptoList'));
+    });
+
+    $("body").on("click", ".crypto-list-item", function(event) {
         let selectedId = $(this).data('id');
         let name = $(this).data('name');
         let fullname = $(this).data('fullname');
@@ -146,12 +162,20 @@ var uiActions = (function(){
     }
 
     //Toggle Loading
-    var toggleElementState = function(elementToToggle) {
-        if(elementToToggle[0].classList.contains('coinList')) {
-            $("#coinCont").toggleClass('active')
+    var toggleElementState = function(element, currType) {
+
+        if(currType == "crypto") {
+            $('#cryptoList').addClass('active');
+            $('#fiatList').removeClass('active');
+        } else{
+            $('#fiatList').addClass('active');
         }
 
-        elementToToggle.toggleClass('active');
+        if($(element).hasClass("active")) {
+            $(element).removeClass("active");
+        } else {
+            $(element).addClass("active");
+        }
     }
 
     //Get selected data
