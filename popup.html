@@ -122,7 +122,7 @@
             font-size: 1.3em;
         }
         
-        #toggleLbl {
+        #convertLbl {
             display: block;
             position: relative;
             z-index: 2;
@@ -144,18 +144,18 @@
             transition: width 0.4s ease, height 0.4s ease, top 0.4s ease;
         }
 
-        #toggleLbl::after{
+        #convertLbl::after{
             content: 'Convert';
         }
         
-        #toggleLbl.active {
+        #convertLbl.active {
             animation: loading 0.5s ease-in-out infinite;
             width: 10px;
             height: 10px;
             top: 15%;
         }
 
-        #toggleLbl.active::after{
+        #convertLbl.active::after{
             content: '...';
             font-weight: 600;
             display: block;
@@ -532,7 +532,7 @@
         <span id="priceSym2" class="priceSym" data-currType="fiat">USD</span>
     </div>
 
-    <span id="toggleLbl" class="active"></span>
+    <span id="convertLbl" class="active"></span>
 
     <div class="coinCont" id="coinCont">
         <div class="coinNav">
