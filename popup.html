@@ -234,18 +234,29 @@
         #fiatList li {
             position: relative;
             text-decoration: none;
-            float: left;
             margin: 10px 20px;
-            padding: 15px 12px;
+            padding: 10px;
             text-align: center;
-            border-radius: 50%;
+            border-radius: 5px;
             list-style-type: none;
             background: #3e81f3;
             color: white;
         }
 
-        #fiatList li:hover {
+        #fiatList li:hover .item-text {
+            color: orange;
+        }
+
+        .item-text, .item-sub-text {
+            margin: 0;
+        }
+
+        .item-text {
             font-weight: 600;
+        }
+
+        .item-sub-text{
+            font-size: 0.8em;
         }
         
         .coinNav {
@@ -532,7 +543,7 @@
         <span id="priceSym2" class="priceSym" data-currType="fiat">USD</span>
     </div>
 
-    <span id="convertLbl" class="active"></span>
+    <span id="convertLbl"></span>
 
     <div class="coinCont" id="coinCont">
         <div class="coinNav">

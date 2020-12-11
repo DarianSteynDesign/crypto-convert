@@ -37,6 +37,10 @@ var services = (function() {
     var getCryptoTop100List = function(currency){
         let top100Endpoint = "https://min-api.cryptocompare.com/data/top/totaltoptiervolfull?limit=100&tsym=";
 
+        setTimeout(() =>{
+            uiActions.toggleElementState($("#convertLbl"));
+        }, 500)
+        
         apiCall("Get", top100Endpoint + currency, "json", successMethods.getCryptoTop100ListSuccess, requestError);
     }
 
@@ -134,7 +138,6 @@ var eventListeners = (function(){
     });
 
     $("#convertLbl").click(function(){
-        console.log($("#sym1")[0].dataset.price);
         uiActions.getInputValues($("#sym1")[0].dataset.price, $("#sym2"));
     });
 
@@ -168,6 +171,7 @@ var uiActions = (function(){
         });
         uiActions.selectedPriceInput.inputText = "#sym1";
         uiActions.selectedPriceInput.input = "#priceSym1";
+        console.log('loadCurrencyList');
         getSelectedCryptoData(1182, "BTC" ,"crypto");
         
         listElement.html(coinList);
@@ -178,8 +182,9 @@ var uiActions = (function(){
         let fiatList = "";
 
         list.forEach((listItem) => {
-            fiatList += "<li class='crypto-list-item' data-type='fiat' data-name='" + Object.keys(listItem)[0] + "'" 
-            + "data-id='" + Object.keys(listItem)[0] + "'>" + Object.keys(listItem)[0] + "</li>";
+            let fiatSymbol = Object.keys(listItem)[0];
+            fiatList += "<li class='crypto-list-item' data-type='fiat' data-name='" + fiatSymbol + "'" 
+            + "data-id='" + fiatSymbol + "'> <p class='item-text'>"  + fiatSymbol +  "</p> <p class='item-sub-text'>"  + listItem[fiatSymbol] +  "</p> </li>";
         });
 
         $("#fiatList").html(fiatList);
@@ -206,21 +211,29 @@ var uiActions = (function(){
     var getSelectedCryptoData = function(selectedId, selectedName, selectedType) {
         selectedId = JSON.stringify(selectedId);
 
-        //console.log(selectedId, selectedName, selectedType, selectedPriceInput);
+        console.log(selectedId, selectedName, selectedType, selectedPriceInput);
 
         if(selectedType != undefined){
             if(selectedType === "crypto"){
                 crytpoTop100.forEach(function(item){
-                    let cryptoPrice = Object.values(item.RAW)[0].PRICE;
+                    //Check for object that contains price
+                    if(item.RAW){
+                        let cryptoPrice = Object.values(item.RAW)[0].PRICE;
+
+                        $(selectedPriceInput.input).attr("data-currtype", selectedType);
         
-                    if(item.CoinInfo["Id"] == selectedId){
-                        $("#sym1").attr("data-price", cryptoPrice);
-                        updateUiWithSelected(cryptoPrice, selectedName, selectedPriceInput.inputText, selectedPriceInput.input)
+                        if(item.CoinInfo["Id"] == selectedId){
+                            $("#sym1").attr("data-price", cryptoPrice);
+                            updateUiWithSelected(cryptoPrice, selectedName, selectedPriceInput.inputText, selectedPriceInput.input)
+                        }
                     }
                 });
-            } else{
+            } else {
                 let fiatPrice = 1;
+                $(selectedPriceInput.input).attr("data-currtype", selectedType);
+                $("#sym2").attr("data-price", fiatPrice);
                 updateUiWithSelected(fiatPrice, selectedName, selectedPriceInput.inputText, selectedPriceInput.input)
+                services.getCryptoTop100List(JSON.parse(selectedId));
             }
         }
     }
@@ -235,7 +248,8 @@ var uiActions = (function(){
         inputVal1 = parseFloat(inputVal1).toFixed(2);
         inputVal2 = parseFloat(inputVal2[0].value).toFixed(2);
 
-        //updateUiWithSelected(mainMethods.convertValues(inputVal1, inputVal2), $("#priceSym1")[0].innerText, $("#sym1"));
+        console.log(inputVal1, inputVal2);
+        updateUiWithSelected(mainMethods.convertValues(inputVal1, inputVal2), $("#priceSym1")[0].innerText, $("#sym1"));
     }
 
     return {
