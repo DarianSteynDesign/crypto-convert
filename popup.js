@@ -59,7 +59,7 @@ var services = (function() {
 var mainMethods = (function(){
 
     var getCryptoTop100List = function(){
-        services.getCryptoTop100List("ZAR");
+        services.getCryptoTop100List("USD");
     }();
 
     var loadFiatList = function(){
@@ -86,20 +86,13 @@ var mainMethods = (function(){
 
 var eventListeners = (function(){
 
-    var clickEvent = function(element, callback) {
-        element.click(function(){
-            callback();
-        });
-    }
-    //clickEvent($("#priceSym1"), uiActions.toggleElementState($("#coinCont")));
-
     //Top currency button event
     $("#priceSym1").click(function(event) {
         let currType = event.target.dataset.currtype;
 
         uiActions.selectedPriceInput.inputText = "#sym1";
         uiActions.selectedPriceInput.input = "#priceSym1";
-        uiActions.toggleElementState($('#coinCont'), currType);
+        uiActions.toggleElementState($('#cryptoList'), false);
     });
 
     $("#priceSym2").click(function(event) {
@@ -107,24 +100,23 @@ var eventListeners = (function(){
 
         uiActions.selectedPriceInput.inputText = "#sym2";
         uiActions.selectedPriceInput.input = "#priceSym2";
-        uiActions.toggleElementState($('#coinCont'), currType);
+        uiActions.toggleElementState($('#fiatList'), false);
     });
 
     $("#cryptoBtn").click(function(event) {
         let currType = event.target.dataset.currtype;
 
-        uiActions.toggleElementState(null, currType);
+        uiActions.toggleElementState($('#cryptoList'), false);
     });
     
     $("#fiatBtn").click(function(event) {
         let currType = event.target.dataset.currtype;
-
-        uiActions.toggleElementState($('#cryptoList'), currType);
+        uiActions.toggleElementState($('#fiatList'), false);
     });
 
     $("#closeBtn").click(function() {
-        uiActions.toggleElementState($('#coinCont'));
-        uiActions.toggleElementState($('#cryptoList'));
+        uiActions.toggleElementState($('#fiatList'), true);
+        uiActions.toggleElementState($('#cryptoList'), true);
     });
 
     $("body").on("click", ".crypto-list-item", function(event) {
@@ -134,7 +126,7 @@ var eventListeners = (function(){
         let selectedType = $(this).data('type');
 
         uiActions.getSelectedCryptoData(selectedId, name, selectedType);
-        uiActions.toggleElementState($("#coinCont"));
+        //uiActions.toggleElementState($("#coinCont"));
     });
 
     $("#convertLbl").click(function(){
@@ -187,24 +179,23 @@ var uiActions = (function(){
             + "data-id='" + fiatSymbol + "'> <p class='item-text'>"  + fiatSymbol +  "</p> <p class='item-sub-text'>"  + listItem[fiatSymbol] +  "</p> </li>";
         });
 
+        updateUiWithSelected(1, "USD", $("#sym2"), $("#priceSym2"))
+
         $("#fiatList").html(fiatList);
     }
 
     //Toggle Loading
-    var toggleElementState = function(element, currType) {
-
-        if(currType == "crypto") {
-            $('#cryptoList').addClass('active');
-            $('#fiatList').removeClass('active');
-        } else{
-            $('#fiatList').addClass('active');
-        }
-
-        if($(element).hasClass("active")) {
+    var toggleElementState = function(element, closeElement) {
+        if(closeElement){
             $(element).removeClass("active");
-        } else {
-            $(element).addClass("active");
+        } else{
+            if($(element).hasClass("active")) {
+                $(element).removeClass("active");
+            } else {
+                $(element).addClass("active");
+            }
         }
+
     }
 
     //Get selected data
