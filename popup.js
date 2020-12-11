@@ -88,29 +88,22 @@ var eventListeners = (function(){
 
     //Top currency button event
     $("#priceSym1").click(function(event) {
-        let currType = event.target.dataset.currtype;
-
         uiActions.selectedPriceInput.inputText = "#sym1";
         uiActions.selectedPriceInput.input = "#priceSym1";
         uiActions.toggleElementState($('#cryptoList'), false);
     });
 
-    $("#priceSym2").click(function(event) {
-        let currType = event.target.dataset.currtype;
-
+    $("#priceSym2").click(function() {
         uiActions.selectedPriceInput.inputText = "#sym2";
         uiActions.selectedPriceInput.input = "#priceSym2";
         uiActions.toggleElementState($('#fiatList'), false);
     });
 
-    $("#cryptoBtn").click(function(event) {
-        let currType = event.target.dataset.currtype;
-
+    $("#cryptoBtn").click(function() {
         uiActions.toggleElementState($('#cryptoList'), false);
     });
     
-    $("#fiatBtn").click(function(event) {
-        let currType = event.target.dataset.currtype;
+    $("#fiatBtn").click(function() {
         uiActions.toggleElementState($('#fiatList'), false);
     });
 
@@ -119,7 +112,7 @@ var eventListeners = (function(){
         uiActions.toggleElementState($('#cryptoList'), true);
     });
 
-    $("body").on("click", ".crypto-list-item", function(event) {
+    $("body").on("click", ".crypto-list-item", function() {
         let selectedId = $(this).data('id');
         let name = $(this).data('name');
         let fullname = $(this).data('fullname');
@@ -251,7 +244,6 @@ var uiActions = (function(){
         updateUiWithSelected,
         loadFiatList,
         getInputValues,
-
         selectedPriceInput
     }
 })(uiActions);
