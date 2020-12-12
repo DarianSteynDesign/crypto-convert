@@ -90,26 +90,27 @@ var eventListeners = (function(){
     $("#priceSym1").click(function(event) {
         uiActions.selectedPriceInput.inputText = "#sym1";
         uiActions.selectedPriceInput.input = "#priceSym1";
-        uiActions.toggleElementState($('#cryptoList'), false);
+
+        toggleCryptoList();
     });
 
     $("#priceSym2").click(function() {
         uiActions.selectedPriceInput.inputText = "#sym2";
         uiActions.selectedPriceInput.input = "#priceSym2";
-        uiActions.toggleElementState($('#fiatList'), false);
+
+        toggleFiatList();
     });
 
     $("#cryptoBtn").click(function() {
-        uiActions.toggleElementState($('#cryptoList'), false);
+        toggleCryptoList();
     });
     
     $("#fiatBtn").click(function() {
-        uiActions.toggleElementState($('#fiatList'), false);
+        toggleFiatList();
     });
 
     $("#closeBtn").click(function() {
-        uiActions.toggleElementState($('#fiatList'), true);
-        uiActions.toggleElementState($('#cryptoList'), true);
+        closeCurrencyList();
     });
 
     $("body").on("click", ".crypto-list-item", function() {
@@ -119,12 +120,34 @@ var eventListeners = (function(){
         let selectedType = $(this).data('type');
 
         uiActions.getSelectedCryptoData(selectedId, name, selectedType);
-        //uiActions.toggleElementState($("#coinCont"));
+        closeCurrencyList();
     });
 
     $("#convertLbl").click(function(){
         uiActions.getInputValues($("#sym1")[0].dataset.price, $("#sym2"));
     });
+
+    $("#searchInput").keyup(function(event){
+        uiActions.currencySearch(event.target.value);
+    });
+
+    var closeCurrencyList = function() {
+        uiActions.toggleElementState($('#fiatList'), true);
+        uiActions.toggleElementState($('#cryptoList'), true);
+        uiActions.toggleElementState($('#searchWrap'), true);
+    }
+
+    var toggleCryptoList = function() {
+        uiActions.toggleElementState($('#fiatList'), true);
+        uiActions.toggleElementState($('#cryptoList'), false);
+        uiActions.toggleElementState($('#searchWrap'), false);
+    }
+
+    var toggleFiatList = function() {
+        uiActions.toggleElementState($('#cryptoList'), true);
+        uiActions.toggleElementState($('#fiatList'), false);
+        uiActions.toggleElementState($('#searchWrap'), false);
+    }
 
     return {
         
@@ -224,7 +247,7 @@ var uiActions = (function(){
 
     //Update ui with selected value
     var updateUiWithSelected = function(selectedPrice, selectedName, inputToUpdate, textToUpdate){
-        $(inputToUpdate).val(selectedPrice);
+        $(inputToUpdate).val(selectedPrice.toFixed(2));
         $(textToUpdate).text(selectedName);
     }
 
@@ -236,6 +259,23 @@ var uiActions = (function(){
         updateUiWithSelected(mainMethods.convertValues(inputVal1, inputVal2), $("#priceSym1")[0].innerText, $("#sym1"));
     }
 
+    var currencySearch = function(inputText) {
+        var filter, listItems, listItem, txtValue;
+        filter = inputText.toUpperCase();
+
+        listItems = document.querySelectorAll(".crypto-list-item");
+
+        for (var i = 0; i < listItems.length; i++) {
+            listItem = listItems[i];
+            txtValue = listItem.textContent || listItem.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                listItems[i].style.display = "";
+            } else {
+                listItems[i].style.display = "none";
+            }
+        }
+    }
+
     return {
         getCryptoTop100Data,
         toggleElementState,
@@ -244,6 +284,7 @@ var uiActions = (function(){
         updateUiWithSelected,
         loadFiatList,
         getInputValues,
+        currencySearch,
         selectedPriceInput
     }
 })(uiActions);

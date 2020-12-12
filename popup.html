@@ -40,12 +40,17 @@
         
         #crypConLogo {
             position: relative;
-            top: 10px;
+            top: 8px;
+            right: 10px;
             z-index: 2;
             width: auto;
-            height: 30px;
+            height: 22px;
             display: block;
             margin: 0 auto;
+        }
+
+        .converter-container {
+            height: 90%;
         }
         
         .symContainer1,
@@ -90,13 +95,12 @@
             margin: 0 auto;
             width: 200px;
             background: none;
-            border: none;
+            border: 1px solid transparent;
             text-align: center;
             font-family: 'Montserrat', sans-serif;
         }
         
         .symInputs:focus {
-            border: 0;
             outline: none;
         }
         
@@ -132,7 +136,7 @@
             z-index: 2;
             margin: 0 auto;
             font-size: 1.3em;
-            top: 14%;
+            top: 11%;
             width: 80px;
             height: 20px;
             border-radius: 15px;
@@ -192,7 +196,7 @@
             width: 100%;
             background-color: white;
             z-index: 3;
-            overflow: scroll;
+            overflow: hidden;
         }
 
         /* #coinCont #fiatList li {
@@ -243,7 +247,7 @@
         }
         
         .coinNav {
-            position: fixed;
+            position: relative;
             z-index: 4;
             left: 0;
             width: 100%;
@@ -257,11 +261,21 @@
             float: left;
         }
         
-        div#searchWrap {
+        #searchWrap {
             float: right;
+            display: block;
+        }
+
+        #searchWrap.active #crypConLogo {
+            display: none;
+        }
+
+        #searchWrap.active #searchInput {
+            display: block;
         }
         
         #searchInput {
+            display: none;
             float: left;
             margin: 10px 10px;
             height: 20px;
@@ -298,7 +312,7 @@
         
         .coinListWrap {
             position: relative;
-            padding-top: 40px;
+            margin-top: 40px;
             height: 100%;
         }
         
@@ -325,14 +339,19 @@
             z-index: 3;
         }
 
+        #fiatList.active li{
+            height: auto;
+            margin: 10px;
+        }
+
         #cryptoList li, #fiatList li{
             height: 0;
             margin: 0;
         }
 
-        #cryptoList.active li, #fiatList li{
+        #cryptoList.active li{
             height: auto;
-            margin: initial;
+            margin: 10px;
         }
 
         .coinList.active {
@@ -531,36 +550,38 @@
 
 <body>
     <div class="content-container">
+        <div class="coinNav">
+            <div id="changeType">
+                <a id="closeBtn" class="nav-btn"></a>
+
+                <a id="cryptoBtn" class="nav-btn" data-currType="crypto"></a>
+
+                <a id="fiatBtn" class="nav-btn" data-currType="fiat"></a>
+            </div>
+
+            <div id="searchWrap">
+                <img id="crypConLogo" src="crypConlogo.png">
+                <input type="text" id="searchInput" placeholder="Search">
+            </div>
+        </div>
+
         <div id="topBg"></div>
-        <img id="crypConLogo" src="crypConlogo.png">
     
-        <div class="symContainer1 symCont">
-            <input type="text" id="sym1" class="symInputs">
-            <span id="priceSym1" class="priceSym" data-currType="crypto">BTC</span>
+        <div class="converter-container">
+            <div class="symContainer1 symCont">
+                <input type="text" id="sym1" class="symInputs">
+                <span id="priceSym1" class="priceSym" data-currType="crypto">BTC</span>
+            </div>
+        
+            <div class="symContainer2 symCont">
+                <input type="text" id="sym2" class="symInputs">
+                <span id="priceSym2" class="priceSym" data-currType="fiat">USD</span>
+            </div>
+        
+            <span id="convertLbl"></span>
         </div>
-    
-        <div class="symContainer2 symCont">
-            <input type="text" id="sym2" class="symInputs">
-            <span id="priceSym2" class="priceSym" data-currType="fiat">USD</span>
-        </div>
-    
-        <span id="convertLbl"></span>
     
         <div class="coinCont" id="coinCont">
-            <div class="coinNav">
-                <div id="changeType">
-                    <a id="closeBtn" class="nav-btn"></a>
-    
-                    <a id="cryptoBtn" class="nav-btn" data-currType="crypto"></a>
-    
-                    <a id="fiatBtn" class="nav-btn" data-currType="fiat"></a>
-                </div>
-    
-                <div id="searchWrap">
-                    <input type="text" id="searchInput" placeholder="Search">
-                </div>
-            </div>
-    
             <div class="coinListWrap" id="coinWrap1">
                 <ul id="cryptoList" class="coinList">
     
