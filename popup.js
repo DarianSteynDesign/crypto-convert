@@ -132,21 +132,33 @@ var eventListeners = (function(){
     });
 
     var closeCurrencyList = function() {
-        uiActions.toggleElementState($('#fiatList'), true);
-        uiActions.toggleElementState($('#cryptoList'), true);
-        uiActions.toggleElementState($('#searchWrap'), true);
+        var lists = [{"element": $('#fiatList'), state: true}, {"element": $('#cryptoList'), state: true}];
+        uiActions.toggleSearch();
+        toggleLists(lists);
     }
 
     var toggleCryptoList = function() {
-        uiActions.toggleElementState($('#fiatList'), true);
-        uiActions.toggleElementState($('#cryptoList'), false);
-        uiActions.toggleElementState($('#searchWrap'), false);
+        var lists = [{"element": $('#fiatList'), state: true}, {"element": $('#cryptoList'), state: false}];
+        uiActions.toggleSearch();
+        toggleLists(lists);
     }
 
     var toggleFiatList = function() {
-        uiActions.toggleElementState($('#cryptoList'), true);
-        uiActions.toggleElementState($('#fiatList'), false);
-        uiActions.toggleElementState($('#searchWrap'), false);
+        var lists = [{"element": $('#cryptoList'), state: true}, {"element": $('#fiatList'), state: false}];
+        uiActions.toggleSearch();
+        toggleLists(lists);
+    }
+
+    var toggleLists = function(listsToToggle) {
+        listsToToggle.forEach(function(listItem){
+            uiActions.toggleElementState(listItem.element, listItem.state);
+        });
+
+        function emptySearch(){
+            uiActions.currencySearch("");
+            $("#searchInput").val("");
+        }
+        emptySearch();
     }
 
     return {
@@ -211,7 +223,10 @@ var uiActions = (function(){
                 $(element).addClass("active");
             }
         }
+    }
 
+    var toggleSearch = function() {
+        $('#searchWrap').addClass("active");
     }
 
     //Get selected data
@@ -279,6 +294,7 @@ var uiActions = (function(){
     return {
         getCryptoTop100Data,
         toggleElementState,
+        toggleSearch,
         loadCurrencyList,
         getSelectedCryptoData,
         updateUiWithSelected,
