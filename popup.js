@@ -262,7 +262,7 @@ var uiActions = (function(){
 
     //Update ui with selected value
     var updateUiWithSelected = function(selectedPrice, selectedName, inputToUpdate, textToUpdate){
-        $(inputToUpdate).val(selectedPrice.toFixed(2));
+        $(inputToUpdate).val(parseFloat(selectedPrice).toFixed(2));
         $(textToUpdate).text(selectedName);
     }
 
