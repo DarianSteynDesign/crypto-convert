@@ -79,7 +79,7 @@
         
         .symContainer1.switch #sym1,
         .symContainer1.switch #priceSym1 {
-            color: #4580ff;
+            color: #603BD6;
         }
         
         .symContainer2 {
@@ -115,7 +115,7 @@
         }
         
         #sym2 {
-            color: #4580ff;
+            color: #603BD6;
         }
         
         .priceSym {
@@ -132,7 +132,7 @@
         
         #priceSym2 {
             font-family: 'Montserrat', sans-serif;
-            color: #4580ff;
+            color: #603BD6;
             font-size: 1.3em;
         }
         
@@ -232,7 +232,7 @@
             text-align: center;
             border-radius: 5px;
             list-style-type: none;
-            background: #3e81f3;
+            background: #5230c3;
             color: white;
         }
 
@@ -265,6 +265,7 @@
         }
         
         div#changeType {
+            padding-right: 10px;
             margin-left: auto;
         }
         
@@ -273,12 +274,16 @@
             display: block;
         }
 
-        #searchWrap.active #crypConLogo {
+        .coinNav.active #crypConLogo {
             display: none;
         }
 
-        #searchWrap.active #searchInput {
+        .coinNav.active #searchInput {
             display: block;
+        }
+
+        .coinNav.active #closeBtn{
+            display: inline-block;
         }
         
         #searchInput {
@@ -308,17 +313,30 @@
             background-color: #603bd6;
             border-radius: 50%;
             margin: 8px 4px;
-            -webkit-transition: transform 1s ease;
-            -moz-transition: transform 1s ease;
-            -o-transition: transform 1s ease;
-            transition: transform 1s ease;
+            overflow: hidden;
         }
 
-        .nav-btn:hover {
-            transform: rotateY(360deg);
+        .nav-btn::before{
+            content: ' ';
+            width: 4px;
+            height: 50px;
+            background: white;
+            opacity: 0.2;
+            transform: translate3d(-10px, -35px, 10px) rotate(45deg);
+            display: block;
+            mix-blend-mode: overlay;
+            -webkit-transition: transform 0.4s ease;
+            -moz-transition: transform 0.4s ease;
+            -o-transition: transform 0.4s ease;
+            transition: transform 0.4s ease;
+        }
+
+        .nav-btn:hover::before{
+            transform: translate3d(23px, -18px, 10px)
         }
         
         #closeBtn {
+            display: none;
             background-image: url(closeIcon.png);
         }
         
@@ -337,6 +355,7 @@
         }
         
         .coinList {
+            display: none;
             position: relative;
             padding: 0;
             height: 0;
@@ -355,13 +374,17 @@
         }
 
         #cryptoList.active, #fiatList.active {
+            display: block;
+            min-height: 400px;
             opacity: 1;
             z-index: 3;
         }
 
         #fiatList.active li{
             height: auto;
+            float: left;
             margin: 10px;
+            width: 36%;
         }
 
         #cryptoList li, #fiatList li{
@@ -571,20 +594,20 @@
 <body>
     <div class="content-container">
         <div class="coinNav">
+            <div id="searchWrap">
+                <input type="text" id="searchInput" placeholder="Search">
+            </div>
+
             <div class="logo-container">
                 <img id="crypConLogo" src="crypConlogo.png">
             </div>
 
             <div id="changeType">
-                <a id="closeBtn" class="nav-btn"></a>
-
                 <a id="cryptoBtn" class="nav-btn" data-currType="crypto"></a>
 
                 <a id="fiatBtn" class="nav-btn" data-currType="fiat"></a>
-            </div>
 
-            <div id="searchWrap">
-                <input type="text" id="searchInput" placeholder="Search">
+                <a id="closeBtn" class="nav-btn"></a>
             </div>
         </div>
 

@@ -133,19 +133,19 @@ var eventListeners = (function(){
 
     var closeCurrencyList = function() {
         var lists = [{"element": $('#fiatList'), state: true}, {"element": $('#cryptoList'), state: true}];
-        uiActions.toggleSearch();
+        uiActions.toggleNav(true);
         toggleLists(lists);
     }
 
     var toggleCryptoList = function() {
         var lists = [{"element": $('#fiatList'), state: true}, {"element": $('#cryptoList'), state: false}];
-        uiActions.toggleSearch();
+        uiActions.toggleNav(false);
         toggleLists(lists);
     }
 
     var toggleFiatList = function() {
         var lists = [{"element": $('#cryptoList'), state: true}, {"element": $('#fiatList'), state: false}];
-        uiActions.toggleSearch();
+        uiActions.toggleNav(false);
         toggleLists(lists);
     }
 
@@ -225,8 +225,12 @@ var uiActions = (function(){
         }
     }
 
-    var toggleSearch = function() {
-        $('#searchWrap').addClass("active");
+    var toggleNav = function(setInactive) {
+        if(setInactive){
+            $('.coinNav').removeClass("active");
+        } else{
+            $('.coinNav').addClass("active");
+        }
     }
 
     //Get selected data
@@ -234,6 +238,7 @@ var uiActions = (function(){
         selectedId = JSON.stringify(selectedId);
 
         console.log(selectedId, selectedName, selectedType, selectedPriceInput);
+        //cookieStoreSelected(selectedId, selectedName, selectedType, selectedPriceInput);
 
         if(selectedType != undefined){
             if(selectedType === "crypto"){
@@ -254,15 +259,32 @@ var uiActions = (function(){
                 let fiatPrice = 1;
                 $(selectedPriceInput.input).attr("data-currtype", selectedType);
                 $("#sym2").attr("data-price", fiatPrice);
-                updateUiWithSelected(fiatPrice, selectedName, selectedPriceInput.inputText, selectedPriceInput.input)
+                updateUiWithSelected(1, selectedName, selectedPriceInput.inputText, selectedPriceInput.input)
                 services.getCryptoTop100List(JSON.parse(selectedId));
             }
         }
     }
 
+    function cookieStoreSelected(selectedId, selectedName, selectedType, selectedPriceInput) {
+        let cookie = "selectedCurrency=" + selectedId + "; expires=Thu, 1 Dec 2022 12:00:00 UTC; path=/";
+        document.cookie = cookie;
+        console.log('Cookie created - ', cookie);
+        //deleteCookieValue();
+        getLatestCookie();
+    }
+
+    function getLatestCookie(){
+        console.log('Looking for latest cookie - ', document.cookie);
+    }
+
+    function deleteCookieValue(selectedId){
+        document.cookie = 'selectedId=; expires=Thu, 1 Dec 2022 12:00:00 UTC; path=/';
+    }
+
     //Update ui with selected value
     var updateUiWithSelected = function(selectedPrice, selectedName, inputToUpdate, textToUpdate){
-        $(inputToUpdate).val(parseFloat(selectedPrice).toFixed(2));
+        let formattedString = parseFloat(selectedPrice).toLocaleString('en-US', {maximumFractionDigits:2});
+        $(inputToUpdate).val(formattedString);
         $(textToUpdate).text(selectedName);
     }
 
@@ -294,7 +316,7 @@ var uiActions = (function(){
     return {
         getCryptoTop100Data,
         toggleElementState,
-        toggleSearch,
+        toggleNav,
         loadCurrencyList,
         getSelectedCryptoData,
         updateUiWithSelected,
