@@ -189,10 +189,19 @@ var uiActions = (function(){
                         "' > <img class='crypto-item-img' src='https://www.cryptocompare.com/" + item.CoinInfo.ImageUrl + 
                         " ' /> <p class='crypto-item-text'>" + item.CoinInfo.Name + "</p></li>";
         });
+
         uiActions.selectedPriceInput.inputText = "#sym1";
         uiActions.selectedPriceInput.input = "#priceSym1";
-        console.log('loadCurrencyList');
-        getSelectedCryptoData(1182, "BTC" ,"crypto");
+
+        currentSelection = $(uiActions.selectedPriceInput.input);
+        setTimeout(() => {
+            if(currentSelection[0].dataset.id){
+                console.log('loadCurrencyList', currentSelection, currentSelection[0].dataset, currentSelection[0].dataset.id);
+                getSelectedCryptoData(parseInt(currentSelection[0].dataset.id), currentSelection[0].dataset.name ,"crypto");
+            } else{
+                getSelectedCryptoData(1182, "BTC" ,"crypto");
+            }
+        }, 500);
         
         listElement.html(coinList);
     }
@@ -238,16 +247,18 @@ var uiActions = (function(){
         selectedId = JSON.stringify(selectedId);
 
         console.log(selectedId, selectedName, selectedType, selectedPriceInput);
-        //cookieStoreSelected(selectedId, selectedName, selectedType, selectedPriceInput);
 
         if(selectedType != undefined){
             if(selectedType === "crypto"){
+                
+                $(selectedPriceInput.input).attr("data-currtype", selectedType);
+                $(selectedPriceInput.input).attr("data-id", selectedId);
+                $(selectedPriceInput.input).attr("data-name", selectedName);
+
                 crytpoTop100.forEach(function(item){
                     //Check for object that contains price
                     if(item.RAW){
                         let cryptoPrice = Object.values(item.RAW)[0].PRICE;
-
-                        $(selectedPriceInput.input).attr("data-currtype", selectedType);
         
                         if(item.CoinInfo["Id"] == selectedId){
                             $("#sym1").attr("data-price", cryptoPrice);
@@ -263,22 +274,6 @@ var uiActions = (function(){
                 services.getCryptoTop100List(JSON.parse(selectedId));
             }
         }
-    }
-
-    function cookieStoreSelected(selectedId, selectedName, selectedType, selectedPriceInput) {
-        let cookie = "selectedCurrency=" + selectedId + "; expires=Thu, 1 Dec 2022 12:00:00 UTC; path=/";
-        document.cookie = cookie;
-        console.log('Cookie created - ', cookie);
-        //deleteCookieValue();
-        getLatestCookie();
-    }
-
-    function getLatestCookie(){
-        console.log('Looking for latest cookie - ', document.cookie);
-    }
-
-    function deleteCookieValue(selectedId){
-        document.cookie = 'selectedId=; expires=Thu, 1 Dec 2022 12:00:00 UTC; path=/';
     }
 
     //Update ui with selected value
